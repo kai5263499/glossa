@@ -26,11 +26,14 @@ type pattern struct {
 
 func (p *pattern) Match(content string, callback func(...interface{})) (bool, error) {
 	matches := p.re.FindStringSubmatch(content)
-	args := make([]interface{}, 0)
-	for _, match := range matches[1:] {
-		args = append(args, match)
-	}
 	matchFound := len(matches) > 0
+	args := make([]interface{}, 0)
+
+	if matchFound {
+		for _, match := range matches[1:] {
+			args = append(args, match)
+		}
+	}
 
 	logrus.WithFields(logrus.Fields{
 		"content":     content,
