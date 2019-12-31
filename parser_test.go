@@ -5,7 +5,6 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/sirupsen/logrus"
 )
 
 type parseTest struct {
@@ -31,9 +30,6 @@ var _ = Describe("parser", func() {
 		wg.Add(1)
 		matched, err := pat.Match("set name to wes", func(properties ...interface{}) {
 			defer wg.Done()
-			logrus.WithFields(logrus.Fields{
-				"properties_len": len(properties),
-			}).Infof("match result properties=%+#v", properties)
 			Expect(len(properties)).To(Equal(2))
 		})
 		wg.Wait()
