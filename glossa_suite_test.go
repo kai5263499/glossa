@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestRhema(t *testing.T) {
+func TestGlossa(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Rhema Suite")
+	RunSpecs(t, "Glossa Suite")
 }
