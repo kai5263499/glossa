@@ -30,6 +30,9 @@ func main() {
 		defer wg.Done()
 
 		logrus.WithFields(logrus.Fields{
+			"command":        p.GetCommand(),
+			"regexStr":       p.GetRegexStr(),
+			"token_len":      len(p.GetTokens()),
 			"properties_len": len(parameters),
 		}).Infof("match result parameters=%+#v", parameters)
 	})
