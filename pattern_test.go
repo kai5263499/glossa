@@ -1,8 +1,6 @@
 package glossa
 
 import (
-	"sync"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -45,23 +43,12 @@ var _ = Describe("pattern", func() {
 		}
 
 		for _, t := range tests {
-			var wg sync.WaitGroup
+
+			match, args, err := t.pattern.Match(t.content)
 
 			if t.match {
-				wg.Add(1)
+				Expect(len(args)).To(Equal(t.argsExpected))
 			}
-
-			match, err := t.pattern.Match(t.content, func(properties ...interface{}) {
-				defer wg.Done()
-
-				if t.argsExpected > 0 {
-					Expect(len(properties)).To(Equal(t.argsExpected))
-				} else {
-					Expect(properties).To(BeEmpty())
-				}
-			})
-
-			wg.Wait()
 
 			if t.expectErr {
 				Expect(err).ToNot(BeNil())

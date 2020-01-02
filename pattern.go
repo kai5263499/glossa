@@ -10,7 +10,7 @@ import (
 var _ Pattern = (*pattern)(nil)
 
 type Pattern interface {
-	Match(string, func(...interface{})) (bool, error)
+	Match(string) (bool, []interface{}, error)
 	GetCommand() string
 	GetTokens() []*lexmachine.Token
 	GetRegexStr() string
@@ -24,7 +24,7 @@ type pattern struct {
 	re       *regexp.Regexp
 }
 
-func (p *pattern) Match(content string, callback func(...interface{})) (bool, error) {
+func (p *pattern) Match(content string) (bool, []interface{}, error) {
 	matches := p.re.FindStringSubmatch(content)
 	matchFound := len(matches) > 0
 	args := make([]interface{}, 0)
@@ -43,11 +43,7 @@ func (p *pattern) Match(content string, callback func(...interface{})) (bool, er
 		"matchFound":  matchFound,
 	}).Debugf("match=%+#v args=%+#v", matches, args)
 
-	if matchFound {
-		go callback(args...)
-	}
-
-	return matchFound, nil
+	return matchFound, args, nil
 }
 
 func (p *pattern) GetCommand() string {

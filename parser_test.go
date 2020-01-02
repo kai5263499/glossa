@@ -1,8 +1,6 @@
 package glossa
 
 import (
-	"sync"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -26,14 +24,9 @@ var _ = Describe("parser", func() {
 		Expect(err).To(BeNil())
 		Expect(pat).To(Not(BeNil()))
 
-		var wg sync.WaitGroup
-		wg.Add(1)
-		matched, err := pat.Match("set name to wes", func(properties ...interface{}) {
-			defer wg.Done()
-			Expect(len(properties)).To(Equal(2))
-		})
-		wg.Wait()
+		matched, args, err := pat.Match("set name to wes")
 
+		Expect(len(args)).To(Equal(2))
 		Expect(err).To(BeNil())
 		Expect(matched).To(BeTrue())
 	})
