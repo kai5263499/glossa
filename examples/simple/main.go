@@ -1,8 +1,6 @@
 package main
 
 import (
-	"sync"
-
 	"github.com/kai5263499/glossa"
 	"github.com/sirupsen/logrus"
 )
@@ -23,19 +21,15 @@ func main() {
 	p, err := g.Parse(`set <string> to <string>`)
 	checkErr("parse command", err)
 
-	var wg sync.WaitGroup
-	wg.Add(1)
+	matched, args, err := p.Match("set name to wes")
+	checkErr("match", err)
 
-	p.Match("set name to wes", func(parameters ...interface{}) {
-		defer wg.Done()
+	logrus.WithFields(logrus.Fields{
+		"matched":        matched,
+		"command":        p.GetCommand(),
+		"regexStr":       p.GetRegexStr(),
+		"token_len":      len(p.GetTokens()),
+		"properties_len": len(args),
+	}).Infof("match result parameters=%+#v", args)
 
-		logrus.WithFields(logrus.Fields{
-			"command":        p.GetCommand(),
-			"regexStr":       p.GetRegexStr(),
-			"token_len":      len(p.GetTokens()),
-			"properties_len": len(parameters),
-		}).Infof("match result parameters=%+#v", parameters)
-	})
-
-	wg.Wait()
 }
